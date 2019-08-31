@@ -1,8 +1,15 @@
 {
-  "build": {
-    "env": {
-      "APP_KEY": "@app_key",
-      "ACCESS_TOKEN": "@access_token"
+    "builds": [{
+        "src": "api/tencent.py",
+        "use": "@now/python"
+    }, {
+        "src": "*.html",
+        "use": "@now/static"
+    }],
+    "build": {
+        "env": {
+            "APP_KEY": "@app_key",
+            "ACCESS_TOKEN": "@access_token"
+        }
     }
-  }
 }
