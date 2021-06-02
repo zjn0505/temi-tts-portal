@@ -2,10 +2,13 @@
     "version": 2,
     "builds": [{
         "src": "api/tencent.py",
-        "use": "@now/python"
+        "use": "@vercel/python"
+    }, {
+        "src": "api/google.py",
+        "use": "@vercel/python"
     }, {
         "src": "*.html",
-        "use": "@now/static"
+        "use": "@vercel/static"
     }],
     "env": {
         "APP_KEY": "@app_key",
