@@ -8,6 +8,8 @@ import os
 def getHeader(postData):
     ## 获得ISO8601时间戳
     credentialDate = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
+    print (credentialDate)
+    # credentialDate = "20210810T053330Z"
     ## 拼接数据
     signingContent = postData + credentialDate
     # ***** Task 2: 获取Signature签名 *****
@@ -15,6 +17,7 @@ def getHeader(postData):
     # ***** Task 3: 在HTTP请求头中带上签名信息
     authorizationHeader = 'TVS-HMAC-SHA256-BASIC' + ' ' + 'CredentialKey=' + os.environ['APP_KEY'] + ', ' + 'Datetime=' + credentialDate + ', ' + 'Signature=' + signature
     headers = {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': authorizationHeader}
+    print (authorizationHeader)
     return headers
 def requestRichAnswer():
     ## 获取请求数据(也就是HTTP请求的Body)
@@ -35,6 +38,7 @@ def requestRichAnswer():
 def requestTts(text, name):
     ## 获取请求数据(也就是HTTP请求的Body)
     postDataTts = '{"header": {"guid": "{{STRING}}","qua": "{{STRING}}","user": {"user_id": ""},"lbs": {"longitude": 132.56481,"latitude": 22.36549},"ip": "8.8.8.8","device": {"network": "4G"}},"payload": {"speech_meta": {"compress": "MP3","person": "' + name + '","volume": 50,"speed": 50,"pitch": 50},"session_id": "{{STRING}}","index": 0,"single_request": true,"content": {"text": "'+ text +'"}}}'
+    # postDataTts = '{"header":{"device":{"network":""},"guid":"{{STRING}}","ip":"","lis":{"latitude":22.506395,"longitude":114.056051},"qua":"{{STRING}}","user":{"user_id":""}},"payload":{"content":{"text":"主人 有什么可以帮您!"},"index":0,"session_id":"{{STRING}}","single_request":true,"speech_meta":{"compress":"MP3","person":"YEZI","pitch":50,"speed":50,"volume":50}}}'
     print(postDataTts)
     # **** Send the request *****
     requestUrl = 'https://aiwx.html5.qq.com/api/tts'
