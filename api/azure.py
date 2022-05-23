@@ -87,7 +87,7 @@ def requestTts(text, name, speed, pitch, gender):
     textNode = root.createTextNode(text)
     prosodyChild.appendChild(textNode)
     
-    xml_str = root.toprettyxml()
+    xml_str = root.toprettyxml().encode('utf-8')
 
     print (xml_str)
 
