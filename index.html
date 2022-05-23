@@ -4,12 +4,13 @@
 <head>
     <script src="https://unpkg.com/vue@2"></script>
     <script src="https://unpkg.com/vue-select@2"></script>
+    <script src="https://unpkg.com/vue-router@2"></script>
 </head>
 
 <body>
     <div id="app">
         <h1>中文语音合成</h1>
-        <h2>  powered by 叮当</h2>
+        <h2> powered by 叮当</h2>
         <input size="40" v-model="textInput" placeholder="输入语音文字" />
         <button v-on:click="post_text">转换为音频</button>
         <br>
@@ -28,13 +29,23 @@
     </div>
 
     <div id="app2">
-        <h1>英文文语音合成</h1>
-        <h2>  powered by Google</h2>
-        <input size="40" v-model="textInput" placeholder="输入语音文字" />
-        <button v-on:click="post_text">转换为音频</button>
+        <h1>英文文语音合成|English TTS</h1>
+        <h2> powered by Google</h2>
+        <input size="40" v-model="textInput" placeholder="Input text" />
+        <button v-on:click="post_text">Convert to Voice</button>
         <br>
-        <p>声音</p>
+        <p>Voice</p>
         <v-select :options="options" v-model="selected"></v-select>
+        <p>
+            <div>
+                <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
+                <label for="speed">Speed {{ speed }}</label>
+            </div>
+            <div>
+                <input type="range" id="pitch" name="pitch" min="-10" max="10" v-model="pitch" step="1">
+                <label for="pitch">Pitch {{ pitch }}</label>
+            </div>
+        </p>
         <div v-if="loading">
             <br>
             <div id="loader" class="loader"></div>
@@ -42,6 +53,42 @@
         <div v-if="!loading">
             <br>
             <audio id="audio" autoplay="true" controls="" v-bind:src="'data:audio/mpeg;base64,' + audioData">
+                The “audio” tag is not supported by your browser.
+            </audio>
+        </div>
+    </div>
+
+    <div id="app3">
+        <h1>英文文语音合成|English TTS</h1>
+        <h2> powered by Azure</h2>
+        <input size="40" v-model="textInput" placeholder="Input text" />
+        <button v-on:click="post_text">Convert to Voice</button>
+        <br>
+        <p>Voice</p>
+        <v-select :options="options" v-model="selected"></v-select>
+        <p>
+            <div>
+                <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
+                <label for="speed">Speed {{ speed }}</label>
+            </div>
+            <div>
+                <input type="range" id="pitch" name="pitch" min="-10" max="10" v-model="pitch" step="1">
+                <label for="pitch">Pitch {{ pitch }}</label>
+            </div>
+            <label class="switch">
+                <input type="checkbox" v-model="female">
+                <span class="slider round"></span>
+            </label>
+            <label v-if="female">Female</label>
+            <label v-else>Male</label>
+        </p>
+        <div v-if="loading">
+            <br>
+            <div id="loader" class="loader"></div>
+        </div>
+        <div v-if="!loading">
+            <br>
+            <audio id="audio" autoplay="true" controls="" v-bind:src="audioData">
                 The “audio” tag is not supported by your browser.
             </audio>
         </div>
@@ -69,6 +116,10 @@
         max-width: 30em;
     }
 
+    #app3 {
+        max-width: 30em;
+    }
+
     /* Safari */
     @-webkit-keyframes spin {
         0% {
@@ -89,10 +140,80 @@
             transform: rotate(360deg);
         }
     }
+
+    /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 22px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 10px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: #0075FF;
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px #0075FF;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
 </style>
+
+
 <script>
     Vue.component('v-select', VueSelect.VueSelect)
+    var router = new VueRouter({
+        mode: 'history',
+        routes: []
+    });
     var app = new Vue({
+        router,
         el: '#app',
         data: {
             audioData: '',
@@ -127,39 +248,122 @@
         }
     })
     var app2 = new Vue({
+        router,
         el: '#app2',
         data: {
             audioData: '',
             textInput: '',
+            speed: 1,
+            pitch: 0,
             loading: false,
             options: [
                 'en-US-Wavenet-F',
+                'en-GB-Wavenet-D',
                 'fr-CA-Wavenet-A',
+                'fr-CA-Wavenet-B',
                 'fr-FR-Wavenet-A',
+                'fr-FR-Wavenet-B',
                 'ar-XA-Wavenet-A',
+                'ar-XA-Wavenet-B',
                 'pt-BR-Wavenet-A',
+                'pt-BR-Wavenet-B',
                 'id-ID-Wavenet-A',
+                'id-ID-Wavenet-C',
                 'th-TH-Standard-A',
-                'cmn-TW-Wavenet-A',
                 'cmn-CN-Wavenet-A',
+                'cmn-CN-Wavenet-B',
                 'ko-KR-Wavenet-A',
+                'ko-KR-Wavenet-C',
                 'ja-JP-Wavenet-A',
+                'ja-JP-Wavenet-C',
                 'nl-NL-Wavenet-A',
                 'de-DE-Wavenet-A',
-                'yue-HK-Standard-A'
+                "de-DE-Wavenet-B",
+                'yue-HK-Standard-A',
+                "yue-HK-Standard-D",
+                "cmn-TW-Wavenet-A",
+                "cmn-TW-Wavenet-B",
+                "es-ES-Wavenet-C",
+                "es-ES-Wavenet-B",
+                "it-IT-Wavenet-B",
+                "it-IT-Wavenet-D"
             ],
-            selected: 'en-US-Wavenet-F'
+            selected: 'en-US-Wavenet-F',
+            language: "en",
+            speed: 1,
+            pitch: 0
+        },
+        mounted: function () {
+            console.log(this.language)
+            this.language = this.$route.query.lan
+            console.log(this.language)
         },
         methods: {
             post_text: function (event) {
                 console.log(this.textInput)
                 this.loading = true
-                fetch('/api/google.py?text=' + this.textInput + '&name=' + this.selected)
+                fetch('/api/google.py?text=' + this.textInput + '&name=' + this.selected + '&speed=' + this
+                        .speed + '&pitch=' + this.pitch)
                     .then(response => response.json())
                     .then(json => {
                         console.log(json)
                         this.product = json
                         this.audioData = json.audioContent
+                    })
+                    .catch(e => this.description = e)
+                    .finally(_ => {
+                        console.log("Finished")
+                        this.loading = false
+                    })
+            }
+        }
+    })
+    var app3 = new Vue({
+        router,
+        el: '#app3',
+        data: {
+            audioData: '',
+            textInput: '',
+            speed: 1,
+            pitch: 0,
+            loading: false,
+            options: [
+                "EN_US",
+                "ZH_CN",
+                "ZH_HK",
+                "ZH_TW",
+                "TH_TH",
+                "HE_IL",
+                "KO_KR",
+                "JA_JP",
+                "IN_ID",
+                "DE_DE",
+                "FR_FR",
+                "FR_CA",
+                "PT_BR",
+                "AR_EG",
+                "RU_RU",
+                "IT_IT",
+                "PL_PL",
+                "ES_ES"
+            ],
+            selected: 'EN_US',
+            speed: 1,
+            pitch: 0,
+            female: true
+        },
+        methods: {
+            post_text: function (event) {
+                console.log(this.textInput)
+                this.loading = true
+                fetch('/api/azure.py?text=' + this.textInput + '&name=' + this.selected + '&speed=' + this
+                        .speed + '&pitch=' + this.pitch + '&gender=' + this.female)
+                    .then(response => {
+                        return response.blob()
+                    })
+                    .then(blob => {
+                        this.audioData = window.URL.createObjectURL(blob)
+                        this.loading = false
                     })
                     .catch(e => this.description = e)
                     .finally(_ => {

@@ -7,6 +7,9 @@
         "src": "api/google.py",
         "use": "@vercel/python"
     }, {
+        "src": "api/azure.py",
+        "use": "@vercel/python"
+    }, {
         "src": "*.html",
         "use": "@vercel/static"
     }],

@@ -12,14 +12,15 @@ def getHeader(postData):
     headers = {'Content-Type': 'application/json; charset=UTF-8'}
     return headers
 
-def requestTts(text, name):
+def requestTts(text, name, speed, pitch):
     ## 获取请求数据(也就是HTTP请求的Body)
 
     print(name)
     languageCode = name.split('-')[0] + '-' +  name.split('-')[1]
     print(languageCode)
 
-    postDataTts = '{"input":{"text":"'+ text +'"},"voice":{"languageCode":"'+languageCode+'","name":"'+name+'","ssmlGender":"FEMALE"},"audioConfig":{"audioEncoding":"OGG_OPUS"}}'
+    pitch = str(int(pitch) / 5)
+    postDataTts = '{"input":{"text":"' + text +'"},"voice":{"languageCode":"' + languageCode+'","name":"'+name+'","ssmlGender":"FEMALE"},"audioConfig":{"audioEncoding":"OGG_OPUS","speakingRate":"'+speed+'","pitch":"'+pitch+'"}}'
 
     print(postDataTts)
     # **** Send the request *****
@@ -48,7 +49,7 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
-        self.wfile.write(requestTts(params["text"][0], params["name"][0]).encode())
+        self.wfile.write(requestTts(params["text"][0], params["name"][0], params["speed"][0], params["pitch"][0]).encode())
         return
 
 """
