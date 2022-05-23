@@ -16,6 +16,16 @@
         <br>
         <p>声音</p>
         <v-select :options="options" v-model="selected"></v-select>
+        <p>
+            <div>
+                <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
+                <label for="speed">Speed {{ speed }}</label>
+            </div>
+            <div>
+                <input type="range" id="pitch" name="pitch" min="-10" max="10" v-model="pitch" step="1">
+                <label for="pitch">Pitch {{ pitch }}</label>
+            </div>
+        </p>
         <div v-if="loading">
             <br>
             <div id="loader" class="loader"></div>
@@ -219,6 +229,8 @@
             audioData: '',
             textInput: '',
             loading: false,
+            speed: 1,
+            pitch: 0,
             options: [
                 'YEZI',
                 'ZHOULONGFEI',
@@ -231,7 +243,8 @@
             post_text: function (event) {
                 console.log(this.textInput)
                 this.loading = true
-                fetch('/api/tencent.py?text=' + this.textInput + '&name=' + this.selected)
+                fetch('/api/tencent.py?text=' + this.textInput + '&name=' + this.selected + '&speed=' + this
+                        .speed + '&pitch=' + this.pitch)
                     .then(response => response.json())
                     .then(json => {
                         console.log(json)

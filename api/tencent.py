@@ -35,9 +35,12 @@ def requestRichAnswer():
     # print 'HTTP Status Code:%d' % r.status_code
     # print r.text
     return r.text
-def requestTts(text, name):
+def requestTts(text, name, speed, pitch):
     ## 获取请求数据(也就是HTTP请求的Body)
-    postDataTts = '{"header": {"guid": "{{STRING}}","qua": "{{STRING}}","user": {"user_id": ""},"lbs": {"longitude": 132.56481,"latitude": 22.36549},"ip": "8.8.8.8","device": {"network": "4G"}},"payload": {"speech_meta": {"compress": "MP3","person": "' + name + '","volume": 50,"speed": 50,"pitch": 50},"session_id": "{{STRING}}","index": 0,"single_request": true,"content": {"text": "'+ text +'"}}}'
+
+    speed = str(float(speed) * 50)
+    pitch = str(int(pitch) * 5 + 50)
+    postDataTts = '{"header": {"guid": "{{STRING}}","qua": "{{STRING}}","user": {"user_id": ""},"lbs": {"longitude": 132.56481,"latitude": 22.36549},"ip": "8.8.8.8","device": {"network": "4G"}},"payload": {"speech_meta": {"compress": "MP3","person": "' + name + '","volume": 50,"speed": ' + speed + ',"pitch": ' + pitch + '},"session_id": "{{STRING}}","index": 0,"single_request": true,"content": {"text": "'+ text +'"}}}'
     # postDataTts = '{"header":{"device":{"network":""},"guid":"{{STRING}}","ip":"","lis":{"latitude":22.506395,"longitude":114.056051},"qua":"{{STRING}}","user":{"user_id":""}},"payload":{"content":{"text":"主人 有什么可以帮您!"},"index":0,"session_id":"{{STRING}}","single_request":true,"speech_meta":{"compress":"MP3","person":"YEZI","pitch":50,"speed":50,"volume":50}}}'
     print(postDataTts)
     # **** Send the request *****
@@ -67,5 +70,5 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
-        self.wfile.write(requestTts(params["text"][0], params["name"][0]).encode('ASCII'))
+        self.wfile.write(requestTts(params["text"][0], params["name"][0], params["speed"][0], params["pitch"][0]).encode('ASCII'))
         return
