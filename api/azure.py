@@ -12,6 +12,33 @@ import os
 voices = {
     "EN_US":("en-US-JennyNeural", "en-US-GuyNeural"),
     "ZH_CN":("zh-CN-XiaoxiaoNeural", "zh-CN-YunyangNeural"),
+    "zh-CN-XiaoxiaoNeural-F":("zh-CN-XiaoxiaoNeural", "zh-CN-XiaoxiaoNeural"),
+    "zh-CN-YunxiNeural-M":("zh-CN-YunxiNeural", "zh-CN-YunxiNeural"),
+    "zh-CN-YunjianNeural-M":("zh-CN-YunjianNeural", "zh-CN-YunjianNeural"),
+    "ZH_CN-XiaoyiNeural-F":("zh-CN-XiaoyiNeural", "zh-CN-XiaoyiNeural"),
+    "ZH_CN-YunyangNeural-M":("zh-CN-YunyangNeural", "zh-CN-YunyangNeural"),
+    "ZH_CN-XiaochenNeural-F":("zh-CN-XiaochenNeural", "zh-CN-XiaochenNeural"),
+    "ZH_CN-XiaohanNeural-F":("zh-CN-XiaohanNeural", "zh-CN-XiaohanNeural"),
+    "ZH_CN-XiaomengNeural-F":("zh-CN-XiaomengNeural", "zh-CN-XiaomengNeural"),
+    "ZH_CN-XiaomoNeural-F":("zh-CN-XiaomoNeural", "zh-CN-XiaomoNeural"),
+    "ZH_CN-XiaoqiuNeural-F":("zh-CN-XiaoqiuNeural", "zh-CN-XiaoqiuNeural"),
+    "ZH_CN-XiaoruiNeural-F":("zh-CN-XiaoruiNeural", "zh-CN-XiaoruiNeural"),
+    "ZH_CN-XiaoshuangNeural-F-C":("zh-CN-XiaoshuangNeural", "zh-CN-XiaoshuangNeural"),
+    "ZH_CN-XiaoyanNeural-F":("zh-CN-XiaoyanNeural", "zh-CN-XiaoyanNeural"),
+    "ZH_CN-XiaoyouNeural-F-C":("zh-CN-XiaoyouNeural", "zh-CN-XiaoyouNeural"),
+    "ZH_CN-XiaozhenNeural-F":("zh-CN-XiaozhenNeural", "zh-CN-XiaozhenNeural"),
+    "ZH_CN-YunfengNeural-M":("zh-CN-YunfengNeural", "zh-CN-YunyangNeural"),
+    "ZH_CN-YunhaoNeural-M":("zh-CN-YunhaoNeural", "zh-CN-YunhaoNeural"),
+    "ZH_CN-YunxiaNeural-M":("zh-CN-YunxiaNeural", "zh-CN-YunxiaNeural"),
+    "ZH_CN-YunyeNeural-M":("zh-CN-YunyeNeural", "zh-CN-YunyeNeural"),
+    "ZH_CN-YunzeNeural-M":("zh-CN-YunzeNeural", "zh-CN-YunzeNeural"),
+    "ZH_CN-XiaochenMultilingualNeural-F":("zh-CN-XiaochenMultilingualNeural", "zh-CN-XiaochenMultilingualNeural"),
+    "ZH_CN-XiaorouNeural-F":("zh-CN-XiaorouNeural", "zh-CN-XiaorouNeural"),
+    "ZH_CN-XiaoxiaoDialectsNeural-F":("zh-CN-XiaoxiaoDialectsNeural", "zh-CN-XiaoxiaoDialectsNeural"),
+    "ZH_CN-XiaoxiaoMultilingualNeural-F":("zh-CN-XiaoxiaoMultilingualNeural", "zh-CN-XiaoxiaoMultilingualNeural"),
+    "ZH_CN-XiaoyuMultilingualNeural-F":("zh-CN-XiaoyuMultilingualNeural", "zh-CN-XiaoyuMultilingualNeural"),
+    "ZH_CN-YunjieNeural-M":("zh-CN-YunjieNeural", "zh-CN-YunjieNeural"),
+    "ZH_CN-YunyiMultilingualNeural-M":("zh-CN-YunyiMultilingualNeural", "zh-CN-YunyiMultilingualNeural"),
     "ZH_HK":("zh-HK-HiuGaaiNeural", "zh-HK-WanLungNeural"),
     "ZH_TW":("zh-TW-HsiaoChenNeural", "zh-TW-YunJheNeural"),
     "TH_TH":("th-TH-PremwadeeNeural", "th-TH-NiwatNeural"),
@@ -54,7 +81,7 @@ def requestTts(text, name, speed, pitch, gender):
     print (voice)
         
     # **** Send the request *****
-    requestUrl = 'https://eastasia.api.cognitive.microsoft.com/sts/v1.0/issueToken'
+    requestUrl = 'https://southeastasia.api.cognitive.microsoft.com/sts/v1.0/issueToken'
 
     ## 使用requests.session保持长连接
     session = requests.session()
@@ -67,7 +94,7 @@ def requestTts(text, name, speed, pitch, gender):
     print (r.text)
     token = r.text
 
-    requestUrl = 'https://eastasia.tts.speech.microsoft.com/cognitiveservices/v1'
+    requestUrl = 'https://southeastasia.tts.speech.microsoft.com/cognitiveservices/v1'
     session2 = requests.session()
     session2.headers.update({'Authorization': 'Bear ' + token, 'X-Microsoft-OutputFormat':'audio-16khz-64kbitrate-mono-mp3', 'Content-Type': 'application/ssml+xml'})
 
@@ -76,6 +103,7 @@ def requestTts(text, name, speed, pitch, gender):
     xml = root.createElement('speak') 
     xml.setAttribute('version', '1.0')
     xml.setAttribute('xml:lang', 'en-US')
+    xml.setAttribute('xmlns:mstts', 'http://www.w3.org/2001/mstts')
     root.appendChild(xml)
     
     voiceChild = root.createElement('voice')
@@ -86,7 +114,17 @@ def requestTts(text, name, speed, pitch, gender):
     prosodyChild = root.createElement('prosody')
     prosodyChild.setAttribute('rate', speed)
     prosodyChild.setAttribute('pitch', str(pitch) + "%")
-    voiceChild.appendChild(prosodyChild)
+
+    # <mstts:express-as role="YoungAdultFemale" style="calm">
+    if gender == 'false' and voice == "zh-CN-YunxiNeural":
+        expressAs = root.createElement('mstts:express-as')
+        expressAs.setAttribute('role', "Boy")
+        expressAs.setAttribute('style', "narration-relaxed")
+        expressAs.appendChild(prosodyChild)
+        voiceChild.appendChild(expressAs)
+        
+    else:
+        voiceChild.appendChild(prosodyChild)
 
     textNode = root.createTextNode(text)
     prosodyChild.appendChild(textNode)

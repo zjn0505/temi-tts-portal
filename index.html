@@ -17,14 +17,14 @@
         <p>声音</p>
         <v-select :options="options" v-model="selected"></v-select>
         <p>
-            <div>
-                <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
-                <label for="speed">Speed {{ speed }}</label>
-            </div>
-            <div>
-                <input type="range" id="pitch" name="pitch" min="-10" max="10" v-model="pitch" step="1">
-                <label for="pitch">Pitch {{ pitch }}</label>
-            </div>
+        <div>
+            <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
+            <label for="speed">Speed {{ speed }}</label>
+        </div>
+        <div>
+            <input type="range" id="pitch" name="pitch" min="-10" max="10" v-model="pitch" step="1">
+            <label for="pitch">Pitch {{ pitch }}</label>
+        </div>
         </p>
         <div v-if="loading">
             <br>
@@ -47,14 +47,14 @@
         <p>Voice</p>
         <v-select :options="options" v-model="selected"></v-select>
         <p>
-            <div>
-                <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
-                <label for="speed">Speed {{ speed }}</label>
-            </div>
-            <div>
-                <input type="range" id="pitch" name="pitch" min="-20" max="20" v-model="pitch" step="1">
-                <label for="pitch">Pitch {{ pitch }}</label>
-            </div>
+        <div>
+            <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
+            <label for="speed">Speed {{ speed }}</label>
+        </div>
+        <div>
+            <input type="range" id="pitch" name="pitch" min="-20" max="20" v-model="pitch" step="1">
+            <label for="pitch">Pitch {{ pitch }}</label>
+        </div>
         </p>
         <div v-if="loading">
             <br>
@@ -77,20 +77,20 @@
         <p>Voice</p>
         <v-select :options="options" v-model="selected"></v-select>
         <p>
-            <div>
-                <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
-                <label for="speed">Speed {{ speed }}</label>
-            </div>
-            <div>
-                <input type="range" id="pitch" name="pitch" min="-20" max="20" v-model="pitch" step="1">
-                <label for="pitch">Pitch {{ pitch }}</label>
-            </div>
-            <label class="switch">
-                <input type="checkbox" v-model="female">
-                <span class="slider round"></span>
-            </label>
-            <label v-if="female">Female</label>
-            <label v-else>Male</label>
+        <div>
+            <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
+            <label for="speed">Speed {{ speed }}</label>
+        </div>
+        <div>
+            <input type="range" id="pitch" name="pitch" min="-20" max="20" v-model="pitch" step="1">
+            <label for="pitch">Pitch {{ pitch }}</label>
+        </div>
+        <label class="switch">
+            <input type="checkbox" v-model="female">
+            <span class="slider round"></span>
+        </label>
+        <label v-if="female">Female</label>
+        <label v-else>Male</label>
         </p>
         <div v-if="loading">
             <br>
@@ -244,7 +244,7 @@
                 console.log(this.textInput)
                 this.loading = true
                 fetch('/api/tencent.py?text=' + this.textInput + '&name=' + this.selected + '&speed=' + this
-                        .speed + '&pitch=' + this.pitch)
+                    .speed + '&pitch=' + this.pitch)
                     .then(response => response.json())
                     .then(json => {
                         console.log(json)
@@ -306,7 +306,7 @@
                 "tr-TR-Wavenet-A",
                 "tr-TR-Wavenet-D",
                 "tr-TR-Wavenet-E",
-                
+
             ],
             selected: 'en-US-Wavenet-F',
             language: "en",
@@ -323,7 +323,7 @@
                 console.log(this.textInput)
                 this.loading = true
                 fetch('/api/google.py?text=' + this.textInput + '&name=' + this.selected + '&speed=' + this
-                        .speed + '&pitch=' + this.pitch)
+                    .speed + '&pitch=' + this.pitch)
                     .then(response => response.json())
                     .then(json => {
                         console.log(json)
@@ -350,6 +350,34 @@
             options: [
                 "EN_US",
                 "ZH_CN",
+                "zh-CN-XiaoxiaoNeural-F",
+                "zh-CN-YunxiNeural-M",
+                "zh-CN-YunjianNeural-M",
+                "ZH_CN-XiaoyiNeural-F",
+                "ZH_CN-YunyangNeural-M",
+                "ZH_CN-XiaochenNeural-F",
+                "ZH_CN-XiaohanNeural-F",
+                "ZH_CN-XiaomengNeural-F",
+                "ZH_CN-XiaomoNeural-F",
+                "ZH_CN-XiaoqiuNeural-F",
+                "ZH_CN-XiaoruiNeural-F",
+                "ZH_CN-XiaoshuangNeural-F-C",
+                "ZH_CN-XiaoyanNeural-F",
+                "ZH_CN-XiaoyouNeural-F-C",
+                "ZH_CN-XiaozhenNeural-F",
+                "ZH_CN-YunfengNeural-M",
+                "ZH_CN-YunhaoNeural-M",
+                "ZH_CN-YunxiaNeural-M",
+                "ZH_CN-YunyeNeural-M",
+                "ZH_CN-YunzeNeural-M",
+                "ZH_CN-XiaochenMultilingualNeural-F",
+                "ZH_CN-XiaorouNeural-F",
+                "ZH_CN-XiaoxiaoDialectsNeural-F",
+                "ZH_CN-XiaoxiaoMultilingualNeural-F",
+                "ZH_CN-XiaoyuMultilingualNeural-F",
+                "ZH_CN-YunjieNeural-M",
+                "ZH_CN-YunyiMultilingualNeural-M",
+
                 "ZH_HK",
                 "ZH_TW",
                 "TH_TH",
@@ -381,7 +409,7 @@
                 console.log(this.textInput)
                 this.loading = true
                 fetch('/api/azure.py?text=' + this.textInput + '&name=' + this.selected + '&speed=' + this
-                        .speed + '&pitch=' + this.pitch + '&gender=' + this.female)
+                    .speed + '&pitch=' + this.pitch + '&gender=' + this.female)
                     .then(response => {
                         return response.blob()
                     })
