@@ -9,38 +9,39 @@
 
 <body>
     <div id="app">
-        <h1>中文语音合成</h1>
-        <h2> powered by 叮当</h2>
-        <input size="40" v-model="textInput" placeholder="输入语音文字" />
-        <button v-on:click="post_text">转换为音频</button>
-        <br>
-        <p>声音</p>
-        <v-select :options="options" v-model="selected"></v-select>
-        <p>
-        <div>
-            <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
-            <label for="speed">Speed {{ speed }}</label>
-        </div>
-        <div>
-            <input type="range" id="pitch" name="pitch" min="-10" max="10" v-model="pitch" step="1">
-            <label for="pitch">Pitch {{ pitch }}</label>
-        </div>
-        </p>
-        <div v-if="loading">
+        <details>
+            <summary>temi Chinese Version</summary>
+            <h2> powered by Tencent DingDang</h2>
+            <input size="40" v-model="textInput" placeholder="输入语音文字" />
+            <button v-on:click="post_text">转换为音频</button>
             <br>
-            <div id="loader" class="loader"></div>
-        </div>
-        <div v-if="!loading">
-            <br>
-            <audio id="audio" autoplay="true" controls="" v-bind:src="'data:audio/mpeg;base64,' + audioData">
-                The “audio” tag is not supported by your browser.
-            </audio>
-        </div>
+            <p>声音</p>
+            <v-select :options="options" v-model="selected"></v-select>
+            <p>
+            <div>
+                <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
+                <label for="speed">Speed {{ speed }}</label>
+            </div>
+            <div>
+                <input type="range" id="pitch" name="pitch" min="-10" max="10" v-model="pitch" step="1">
+                <label for="pitch">Pitch {{ pitch }}</label>
+            </div>
+            </p>
+            <div v-if="loading">
+                <br>
+                <div id="loader" class="loader"></div>
+            </div>
+            <div v-if="!loading">
+                <br>
+                <audio id="audio" autoplay="true" controls="" v-bind:src="'data:audio/mpeg;base64,' + audioData">
+                    The “audio” tag is not supported by your browser.
+                </audio>
+            </div>
+        </details>
     </div>
 
     <div id="app2">
-        <h1>英文文语音合成|English TTS</h1>
-        <h2> powered by Google</h2>
+        <h1>temi TTS powered by Google</h1>
         <input size="40" v-model="textInput" placeholder="Input text" />
         <button v-on:click="post_text">Convert to Voice</button>
         <br>
@@ -69,8 +70,7 @@
     </div>
 
     <div id="app3">
-        <h1>英文文语音合成|English TTS</h1>
-        <h2> powered by Azure</h2>
+        <h1>temi TTS powered by Azure</h1>
         <input size="40" v-model="textInput" placeholder="Input text" />
         <button v-on:click="post_text">Convert to Voice</button>
         <br>
@@ -394,6 +394,7 @@
                 "IT_IT",
                 "PL_PL",
                 "ES_ES",
+                "ES_CO",
                 "CA_ES",
                 "HI_IN",
                 "ET_ET",

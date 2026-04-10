@@ -58,6 +58,7 @@ voices = {
     "IT_IT":("it-IT-ElsaNeural", "it-IT-DiegoNeural"),
     "PL_PL":("pl-PL-AgnieszkaNeural", "pl-PL-MarekNeural"),
     "ES_ES":("es-ES-ElviraNeural", "es-ES-AlvaroNeural"),
+    "ES_CO":("es-CO-SalomeNeural", "es-CO-GonzaloNeural"),
     "CA_ES":("ca-ES-AlbaNeural", "ca-ES-EnricNeural"),
     "HI_IN":("hi-IN-SwaraNeural", "hi-IN-MadhurNeural"),
     "ET_EE":("et-EE-AnuNeural", "et-EE-KertNeural"),
