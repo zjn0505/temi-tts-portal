@@ -5,6 +5,7 @@
 .cache
 .next
 .now
+.vercel
 .npmignore
 .dockerignore
 .gitignore

@@ -45,8 +45,10 @@
         <input size="40" v-model="textInput" placeholder="Input text" />
         <button v-on:click="post_text">Convert to Voice</button>
         <br>
+        <p>Language</p>
+        <v-select :options="languages" label="label" v-model="selectedLanguage"></v-select>
         <p>Voice</p>
-        <v-select :options="options" v-model="selected"></v-select>
+        <v-select :options="filteredVoices" label="label" v-model="selected"></v-select>
         <p>
         <div>
             <input type="range" id="speed" name="speed" min="0.5" max="2.0" v-model="speed" step="0.5">
@@ -269,60 +271,127 @@
             speed: 1,
             pitch: 0,
             loading: false,
-            options: [
-                'en-US-Wavenet-F',
-                'en-GB-Wavenet-D',
-                'fr-CA-Wavenet-A',
-                'fr-CA-Wavenet-B',
-                'fr-FR-Wavenet-A',
-                'fr-FR-Wavenet-B',
-                'ar-XA-Wavenet-A',
-                'ar-XA-Wavenet-B',
-                'pt-BR-Wavenet-A',
-                'pt-BR-Wavenet-B',
-                'id-ID-Wavenet-A',
-                'id-ID-Wavenet-C',
-                'th-TH-Standard-A',
-                'cmn-CN-Wavenet-A',
-                'cmn-CN-Wavenet-B',
-                'ko-KR-Wavenet-A',
-                'ko-KR-Wavenet-C',
-                'ja-JP-Wavenet-A',
-                'ja-JP-Wavenet-C',
-                'nl-NL-Wavenet-A',
-                'de-DE-Wavenet-A',
-                "de-DE-Wavenet-B",
-                'yue-HK-Standard-A',
-                "yue-HK-Standard-D",
-                "cmn-TW-Wavenet-A",
-                "cmn-TW-Wavenet-B",
-                "es-ES-Wavenet-C",
-                "es-ES-Wavenet-B",
-                "it-IT-Wavenet-B",
-                "it-IT-Wavenet-D",
-                "ca-ES-Standard-A",
-                "tr-TR-Wavenet-C",
-                "tr-TR-Wavenet-B",
-                "tr-TR-Wavenet-A",
-                "tr-TR-Wavenet-D",
-                "tr-TR-Wavenet-E",
-
+            languages: [
+                { code: 'en-US', label: 'English (US)' },
+                { code: 'en-GB', label: 'English (UK)' },
+                { code: 'fr-CA', label: 'French (Canada)' },
+                { code: 'fr-FR', label: 'French (France)' },
+                { code: 'ar-XA', label: 'Arabic' },
+                { code: 'pt-BR', label: 'Portuguese (Brazil)' },
+                { code: 'id-ID', label: 'Indonesian' },
+                { code: 'th-TH', label: 'Thai' },
+                { code: 'cmn-CN', label: 'Mandarin Chinese (China)' },
+                { code: 'cmn-TW', label: 'Mandarin Chinese (Taiwan)' },
+                { code: 'yue-HK', label: 'Chinese (Hong Kong)' },
+                { code: 'ko-KR', label: 'Korean' },
+                { code: 'ja-JP', label: 'Japanese' },
+                { code: 'nl-NL', label: 'Dutch' },
+                { code: 'de-DE', label: 'German' },
+                { code: 'es-ES', label: 'Spanish (Spain)' },
+                { code: 'it-IT', label: 'Italian' },
+                { code: 'ca-ES', label: 'Catalan' },
+                { code: 'tr-TR', label: 'Turkish' },
             ],
-            selected: 'en-US-Wavenet-F',
-            language: "en",
-            speed: 1,
-            pitch: 0
+            selectedLanguage: { code: 'en-US', label: 'English (US)' },
+            // Gender labels from https://docs.cloud.google.com/text-to-speech/docs/list-voices-and-types
+            // `code` is sent to the API; `label` is display-only.
+            voices: [
+                { lang: 'en-US', code: 'en-US-Wavenet-F', label: 'en-US-Wavenet-F (Female)' },
+                { lang: 'en-GB', code: 'en-GB-Wavenet-D', label: 'en-GB-Wavenet-D (Male)' },
+                { lang: 'fr-CA', code: 'fr-CA-Wavenet-A', label: 'fr-CA-Wavenet-A (Female)' },
+                { lang: 'fr-CA', code: 'fr-CA-Wavenet-B', label: 'fr-CA-Wavenet-B (Male)' },
+                { lang: 'fr-FR', code: 'fr-FR-Wavenet-A', label: 'fr-FR-Wavenet-A (Female)' },
+                { lang: 'fr-FR', code: 'fr-FR-Wavenet-B', label: 'fr-FR-Wavenet-B (Male)' },
+                { lang: 'ar-XA', code: 'ar-XA-Wavenet-A', label: 'ar-XA-Wavenet-A (Female)' },
+                { lang: 'ar-XA', code: 'ar-XA-Wavenet-B', label: 'ar-XA-Wavenet-B (Male)' },
+                { lang: 'pt-BR', code: 'pt-BR-Wavenet-A', label: 'pt-BR-Wavenet-A (Female)' },
+                { lang: 'pt-BR', code: 'pt-BR-Wavenet-B', label: 'pt-BR-Wavenet-B (Male)' },
+                { lang: 'id-ID', code: 'id-ID-Wavenet-A', label: 'id-ID-Wavenet-A (Female)' },
+                { lang: 'id-ID', code: 'id-ID-Wavenet-C', label: 'id-ID-Wavenet-C (Male)' },
+                { lang: 'th-TH', code: 'th-TH-Standard-A', label: 'th-TH-Standard-A (Female)' },
+                { lang: 'cmn-CN', code: 'cmn-CN-Wavenet-A', label: 'cmn-CN-Wavenet-A (Female)' },
+                { lang: 'cmn-CN', code: 'cmn-CN-Wavenet-B', label: 'cmn-CN-Wavenet-B (Male)' },
+                { lang: 'ko-KR', code: 'ko-KR-Wavenet-A', label: 'ko-KR-Wavenet-A (Female)' },
+                { lang: 'ko-KR', code: 'ko-KR-Wavenet-C', label: 'ko-KR-Wavenet-C (Male)' },
+                { lang: 'ja-JP', code: 'ja-JP-Wavenet-A', label: 'ja-JP-Wavenet-A (Female)' },
+                { lang: 'ja-JP', code: 'ja-JP-Wavenet-C', label: 'ja-JP-Wavenet-C (Male)' },
+                { lang: 'nl-NL', code: 'nl-NL-Wavenet-A', label: 'nl-NL-Wavenet-A (Female)' },
+                { lang: 'de-DE', code: 'de-DE-Wavenet-A', label: 'de-DE-Wavenet-A (Female)' },
+                { lang: 'de-DE', code: 'de-DE-Wavenet-B', label: 'de-DE-Wavenet-B (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Standard-A', label: 'yue-HK-Standard-A (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Standard-D', label: 'yue-HK-Standard-D (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Achernar', label: 'yue-HK-Chirp3-HD-Achernar (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Achird', label: 'yue-HK-Chirp3-HD-Achird (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Algenib', label: 'yue-HK-Chirp3-HD-Algenib (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Algieba', label: 'yue-HK-Chirp3-HD-Algieba (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Alnilam', label: 'yue-HK-Chirp3-HD-Alnilam (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Aoede', label: 'yue-HK-Chirp3-HD-Aoede (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Autonoe', label: 'yue-HK-Chirp3-HD-Autonoe (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Callirrhoe', label: 'yue-HK-Chirp3-HD-Callirrhoe (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Charon', label: 'yue-HK-Chirp3-HD-Charon (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Despina', label: 'yue-HK-Chirp3-HD-Despina (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Enceladus', label: 'yue-HK-Chirp3-HD-Enceladus (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Erinome', label: 'yue-HK-Chirp3-HD-Erinome (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Fenrir', label: 'yue-HK-Chirp3-HD-Fenrir (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Gacrux', label: 'yue-HK-Chirp3-HD-Gacrux (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Iapetus', label: 'yue-HK-Chirp3-HD-Iapetus (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Kore', label: 'yue-HK-Chirp3-HD-Kore (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Laomedeia', label: 'yue-HK-Chirp3-HD-Laomedeia (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Leda', label: 'yue-HK-Chirp3-HD-Leda (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Orus', label: 'yue-HK-Chirp3-HD-Orus (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Puck', label: 'yue-HK-Chirp3-HD-Puck (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Pulcherrima', label: 'yue-HK-Chirp3-HD-Pulcherrima (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Rasalgethi', label: 'yue-HK-Chirp3-HD-Rasalgethi (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Sadachbia', label: 'yue-HK-Chirp3-HD-Sadachbia (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Sadaltager', label: 'yue-HK-Chirp3-HD-Sadaltager (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Schedar', label: 'yue-HK-Chirp3-HD-Schedar (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Sulafat', label: 'yue-HK-Chirp3-HD-Sulafat (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Umbriel', label: 'yue-HK-Chirp3-HD-Umbriel (Male)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Vindemiatrix', label: 'yue-HK-Chirp3-HD-Vindemiatrix (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Zephyr', label: 'yue-HK-Chirp3-HD-Zephyr (Female)' },
+                { lang: 'yue-HK', code: 'yue-HK-Chirp3-HD-Zubenelgenubi', label: 'yue-HK-Chirp3-HD-Zubenelgenubi (Male)' },
+                { lang: 'cmn-TW', code: 'cmn-TW-Wavenet-A', label: 'cmn-TW-Wavenet-A (Female)' },
+                { lang: 'cmn-TW', code: 'cmn-TW-Wavenet-B', label: 'cmn-TW-Wavenet-B (Male)' },
+                { lang: 'es-ES', code: 'es-ES-Wavenet-C', label: 'es-ES-Wavenet-C (Female)' },
+                { lang: 'es-ES', code: 'es-ES-Wavenet-B', label: 'es-ES-Wavenet-B (Male)' },
+                { lang: 'it-IT', code: 'it-IT-Wavenet-B', label: 'it-IT-Wavenet-B (Female)' },
+                { lang: 'it-IT', code: 'it-IT-Wavenet-D', label: 'it-IT-Wavenet-D (Male)' },
+                { lang: 'ca-ES', code: 'ca-ES-Standard-A', label: 'ca-ES-Standard-A (Female)' },
+                { lang: 'tr-TR', code: 'tr-TR-Wavenet-C', label: 'tr-TR-Wavenet-C (Female)' },
+                { lang: 'tr-TR', code: 'tr-TR-Wavenet-B', label: 'tr-TR-Wavenet-B (Male)' },
+                { lang: 'tr-TR', code: 'tr-TR-Wavenet-A', label: 'tr-TR-Wavenet-A (Female)' },
+                { lang: 'tr-TR', code: 'tr-TR-Wavenet-D', label: 'tr-TR-Wavenet-D (Female)' },
+                { lang: 'tr-TR', code: 'tr-TR-Wavenet-E', label: 'tr-TR-Wavenet-E (Male)' },
+            ],
+            selected: { lang: 'en-US', code: 'en-US-Wavenet-F', label: 'en-US-Wavenet-F (Female)' },
+        },
+        computed: {
+            filteredVoices: function () {
+                var lang = this.selectedLanguage && this.selectedLanguage.code
+                return this.voices.filter(function (voice) {
+                    return voice.lang === lang
+                })
+            }
+        },
+        watch: {
+            selectedLanguage: function () {
+                this.selected = this.filteredVoices[0] || null
+            }
         },
         mounted: function () {
-            console.log(this.language)
-            this.language = this.$route.query.lan
-            console.log(this.language)
+            var lan = this.$route.query.lan
+            if (!lan) return
+            var match = this.languages.find(function (item) {
+                return item.code === lan || item.code.indexOf(lan) === 0
+            })
+            if (match) this.selectedLanguage = match
         },
         methods: {
             post_text: function (event) {
                 console.log(this.textInput)
                 this.loading = true
-                fetch('/api/google.py?text=' + this.textInput + '&name=' + this.selected + '&speed=' + this
+                var voiceName = this.selected && this.selected.code ? this.selected.code : this.selected
+                fetch('/api/google.py?text=' + this.textInput + '&name=' + voiceName + '&speed=' + this
                     .speed + '&pitch=' + this.pitch)
                     .then(response => response.json())
                     .then(json => {
